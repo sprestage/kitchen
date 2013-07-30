@@ -2,19 +2,18 @@
 DEFAULT_FILE_NAME = "~/Documents/myKitchenData.txt"
 
 #TODO - OPEN QUESTIONS 
-#	1. At what point is this code file too big, so I should 
-# 		break it up into multiple .rb files?  And when I do,
-# 		how does that work out?
-#	2. Should I store the recipes and the ingredients in different files?
-#	3. Should I call ingredients "pantry_item"s instead?	
+#	1. At what point is this code file too big, so it should 
+# 		be broken up into multiple .rb files?  What is the best
+#		way to go about this?  Existing conventions?
+#	2. Should the recipes and the ingredients be stored in different files?
+#	3. Should the recipe ingredients be called "pantry_item"s instead?	
 
 #TODO - FEATURES
-#	1. Add example recipes and test possibilities.
-#	2. Locally store all recipes.
-#	3. Locally store all panty items.
-#	4. Save all recipes and pantry items to file.
-#	5. Load kitchen data from given file, warn if file not present or is empty.
-#	6. Set up user interface:
+#	1. Locally store all recipes.
+#	2. Locally store all panty items.
+#	3. Save all recipes and pantry items to file.
+#	4. Load kitchen data from given file, warn if file not present or is empty.
+#	5. Set up user interface:
 #		A. add recipe
 #		B. change recipe
 #		C. list recipes in kitchen
@@ -39,9 +38,10 @@ DEFAULT_FILE_NAME = "~/Documents/myKitchenData.txt"
 #			old file, close the old file, open the new file, and finally load the data
 #			from the new file.  All subsequent changes will be to the new file.)
 #		J. allow user to gracefully exit program when finished
-#	7. Figure out how to do unit tests properly.  
-#	8. Add a README.txt.
-#	9. Add --help and -h to user interface.
+#	6. HIGH - Finish converting unit tests to rspec tests.  This item is nearly complete. 
+#				Only filename and recipe tests remain, to catch up with current code.
+#	7. HIGH - Add a README.txt.
+#	8. Add --help and -h to user interface.
 
 # Kitchen is a place that will have Recipes and ingredients.  
 # Kitchen needs a file to store it's data.
@@ -77,17 +77,18 @@ class PantryItem < Kitchen
 		@staple = staple   # usually in stock, like spices, flour, sugar, milk, etc
 	end
 
-	def isStaple
-		return @staple
+	def whichCategory
+		return @category
 	end
 
 	def isFrozen
 		return @freezer
 	end
 
-	def whichCategory
-		return @category
+	def isStaple
+		return @staple
 	end
+
 end
 
 #TODO should this snippit be in a different place?
@@ -106,45 +107,3 @@ puts file_name
 
 scrambled_eggs = Recipe.new("Scrambled Eggs", ["eggs", "cheddar cheese", "fresh garden herbs"], "Grate cheese.  Scramble eggs in a bowl.  Prep garden herbs.  Melt butter in frying pan over med heat.  Add eggs and herbs.  Cook until no longer runny.  Add cheese.  Finish cooking to desired doneness.  Serve.")
 
-eggs = PantryItem.new("egg(s)")
-milk = PantryItem.new("milk")
-chicken_breast = PantryItem.new("uncooked chicken breast(s)", "meat", true, false)
-whole_chicken = PantryItem.new("one whole uncooked chicken", "meat", true, false)
-
-if eggs.isStaple
-	puts("PASS - Eggs are a staple in my kitchen.")
-else
-	puts("***fail*** - Eggs are not a staple in my kitchen.")
-end
-
-if chicken_breast.isStaple
-	puts("***fail*** - Chicken breasts are a staple in my kitchen.")
-else
-	puts("PASS - Chicken breasts are not a staple in my kitchen.")
-end
-
-if milk.isFrozen
-	puts("***fail*** - Milk gets frozen in my kitchen.")
-else
-	puts("PASS - Milk does not get frozen in my kitchen.")
-end
-
-if chicken_breast.isFrozen
-	puts("PASS - Chicken breasts get frozen in my kitchen.")
-else
-	puts("***fail*** - Chicken breasts do not get frozen in my kitchen.")
-end
-
-temp_category = eggs.whichCategory
-if temp_category == ""
-	puts("PASS - Eggs have no shopping category, as a rule, in my kitchen.")
-else
-	puts("***fail*** - Eggs are: #{temp_category}")
-end
-
-temp_category = chicken_breast.whichCategory
-if temp_category == ""
-	puts("***fail*** - Chicken breasts have no shopping category, as a rule, in my kitchen.")
-else
-	puts("PASS - Chicken breasts are: #{temp_category}")
-end
