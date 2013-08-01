@@ -1,4 +1,4 @@
-# pantry_item_spec.rb 
+### pantry_item_spec.rb 
 require 'spec_helper'
 
 describe PantryItem do
@@ -36,6 +36,12 @@ describe PantryItem do
 	end
 
 	describe "#whichCategory" do
+		it "category is a string" do
+			@default_pantry_item.whichCategory.is_a?(String).should eq(TRUE)
+		end
+	end
+
+	describe "#whichCategory" do
 		it "non-default string can be set" do
 			@non_default_pantry_item.whichCategory.should eq(CATEGORY_NON_DEFAULT)
 		end
@@ -64,6 +70,7 @@ describe PantryItem do
 			@non_default_pantry_item.isStaple.should_not eq(IS_STAPLE_DEFAULT)
 		end
 	end
+
 
 ### TODO Uncomment these when user inputted PantryItems is implemented.
 	# describe "#new" do

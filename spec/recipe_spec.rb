@@ -1,4 +1,4 @@
-# recipe_spec.rb 
+### recipe_spec.rb 
 require 'spec_helper'
 
 describe Recipe do
@@ -37,6 +37,12 @@ describe Recipe do
 	end
 
 	describe "#whatIngredients" do
+		it "ingredients is a string" do
+			@default_recipe.whatIngredients.is_a?(Array).should eq(TRUE)
+		end
+	end
+
+	describe "#whatIngredients" do
 		it "non-default string can be set" do
 			@non_default_recipe.whatIngredients.should eq(INGREDIENTS_NON_DEFAULT)
 		end
@@ -45,6 +51,12 @@ describe Recipe do
 	describe "#whatDirections" do
 		it "default should be FALSE" do
 			@default_recipe.whatDirections.should eq(DIRECTIONS_DEFAULT)
+		end
+	end
+
+	describe "#whatDirections" do
+		it "directions is a string" do
+			@default_recipe.whatDirections.is_a?(String).should eq(TRUE)
 		end
 	end
 

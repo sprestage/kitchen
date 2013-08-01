@@ -1,19 +1,6 @@
 #!/usr/bin/env ruby
-PANTRY_PATH_DEFAULT = "~/Documents/myPantry.txt"
-RECIPE_BOOK_PATH_DEFAULT = "~/Documents/myRecipes.txt"
-CATEGORY_DEFAULT = ""
-IS_FROZEN_DEFAULT = FALSE
-IS_STAPLE_DEFAULT = TRUE
-INGREDIENTS_DEFAULT = []
-DIRECTIONS_DEFAULT = ""
-
-#TODO - OPEN QUESTIONS 
-#	1. At what point is this code file too big, so it should 
-# 		be broken up into multiple .rb files?  What is the best
-#		way to go about this?  Existing conventions?  Best answer
-#		may be to split pieces out as they are completed (or nearly).
-#		Becomes HIGH if file becomes unwieldy.
-#	2. Should the recipe ingredients be called "pantry_item"s instead?	
+### kitchen.rb
+require './config'
 
 #TODO - FEATURES
 #	1. Locally store all recipes.
@@ -46,61 +33,71 @@ DIRECTIONS_DEFAULT = ""
 #			old file, close the old file, open the new file, and finally load the data
 #			from the new file.  All subsequent changes will be to the new file.)
 #		J. allow user to gracefully exit program when finished
-#	6. HIGH - Finish converting unit tests to rspec tests.  This item is nearly complete. 
-#				Only filename and recipe tests remain, to catch up with current code.
-#	7. HIGH - Add a README.txt.
-#	8. Add --help and -h to user interface.
+#	6. HIGH - Add a README.txt.
 
-# Kitchen is a place that will have Recipes and ingredients.  
-# Kitchen needs a file to store it's data.
+# Kitchen is a place that will have Recipes and PantryItems.  
 class Kitchen
 	attr_reader :pantry_path, :recipe_book_path
-	def initialize(pantry_path=PANTRY_PATH_DEFAULT, recipe_book_path=RECIPE_BOOK_PATH_DEFAULT)
+	def initialize(pantry_path=PANTRY_PATH_DEFAULT, recipe_book_path=RECIPE_BOOK_PATH_DEFAULT, 
+									pantry=[], recipe_book=[])
 		@pantry_path = pantry_path
 		@recipe_book_path = recipe_book_path
+		@pantry = pantry
+		@recipe_book = recipe_book
 	end
+
+	def addToPantry
+	end
+
+	def displayPantry
+		puts @pantry
+	end
+
+	def storePantryToFile
+	end
+
+	def loadPantryFromFile
+	end
+
+	def changeToDifferentPantryFile(new_pantry_path)
+	end
+
+	def addToRecipeBook(recipe)
+		@recipe.each  do |r| 
+			if r.name.downcase == recipe.name.downcase 
+				puts ("This recipe, '#{recipe.name}', already exists in the recipe book.")
+				return
+			end
+		end
+		puts ("Adding recipe '#{recipe.name}'.")
+		@recipe.push recipe
+	end
+
+	def deleteFromRecipeBook(recipe)
+		@recipe.each do |r|
+			if r == recipe
+				puts ("Deleting recipe '#{recipe.name}'.")
+				pantry.delete(r)
+				return
+			end
+		end
+	end
+
+	def displayRecipeBook
+		puts @recipe_book
+	end
+
+	def storeRecipeBookToFile
+	end
+
+	def loadRecipeBookFromFile
+	end
+
+	def changeToDifferentRecipeBook(new_recipe_book_path)
+	end
+
 end
 
-class Recipe < Kitchen
-	attr_reader :name
-	def initialize(name, ingredients=INGREDIENTS_DEFAULT, directions=DIRECTIONS_DEFAULT)
-		@name = name
-		@ingredients = ingredients
-		@directions = directions
-	end
 
-	def whatIngredients
-		return @ingredients
-	end
-
-	def whatDirections
-		return @directions
-	end
-end
-
-class PantryItem < Kitchen
-
-	attr_reader :name
-	def initialize(name, category=CATEGORY_DEFAULT, freezer=IS_FROZEN_DEFAULT, staple=IS_STAPLE_DEFAULT)
-		@name = name
-
-		@category = category   # dairy, meat, produce, (which section of grocery store)
-		@freezer = freezer   # stored in the freezer and needs to be thawed, adds prep time
-		@staple = staple   # usually in stock, like spices, flour, sugar, milk, etc
-	end
-
-	def whichCategory
-		return @category
-	end
-
-	def isFrozen
-		return @freezer
-	end
-
-	def isStaple
-		return @staple
-	end
-
-end
 
 

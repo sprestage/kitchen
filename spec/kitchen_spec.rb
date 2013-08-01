@@ -17,6 +17,18 @@ describe Kitchen do
 	it { should respond_to(:pantry_path) }
 	it { should respond_to(:recipe_book_path) }
 
+	describe "#new" do
+    	it "takes one parameter and returns a Kitchen object" do
+        	@default_kitchen.should be_an_instance_of Kitchen
+    	end
+	end
+
+	describe "#new" do
+    	it "takes all three parameters and returns a Kitchen object" do
+        	@non_default_kitchen.should be_an_instance_of Kitchen
+    	end
+	end
+
 	describe "#pantry_path" do
 		it "default sets to DEFAULT_PANTRY_PATH" do
 			@default_kitchen.pantry_path.should eq(PANTRY_PATH_DEFAULT)
@@ -40,6 +52,14 @@ describe Kitchen do
 			@non_default_kitchen.recipe_book_path.should_not eq(RECIPE_BOOK_PATH_DEFAULT)
 		end
 	end
+
+	# describe "#addToPantry" do
+	# 	it "" do
+			
+	# 	end
+	# end
+
+
 
 ### TODO add a regex validator for the user inputted filename.  Probably looking like:
 	#	VALID_FILENAME_REGEX = /\A[a-z\d]+\z/i
