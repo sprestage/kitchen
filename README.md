@@ -1,6 +1,10 @@
 kitchen
 =======
-Application name:  kitchen
+
+WARNING: THIS PROGRAM IS INCOMPLETE.  
+WORK IS ONGOING.  UI TO COME SHORTLY 
+Aug 8, 2012.  -sprestage
+
 
 
 How to run:		This program is designed to be run from a command line.  Typically, like this:

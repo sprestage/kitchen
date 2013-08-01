@@ -3,9 +3,8 @@
 require './config'
 
 #TODO - FEATURES
-#	1. Save all recipes and pantry items to file.
-#	2. Load kitchen data from given file, warn if file not present or is empty.
-#	3. Set up user interface:
+#	1. Load kitchen data from given file, warn if file not present or is empty.
+#	2. Set up user interface:
 #		A. add recipe
 #			i. enum the possible categories here...but maybe not.  discuss possibilities
 #		B. change recipe
@@ -31,7 +30,7 @@ require './config'
 #			old file, close the old file, open the new file, and finally load the data
 #			from the new file.  All subsequent changes will be to the new file.)
 #		J. allow user to gracefully exit program when finished
-#	4. HIGH - Add a README.txt.
+#	3. HIGH - Add a README.txt.
 #
 # TODO - NICE TO HAVE FEATURES (for later implementation consideration)
 # 1. Perhaps an inStock addition to PantryItems
@@ -39,8 +38,8 @@ require './config'
 # Kitchen is a place that will have Recipes and PantryItems.  
 class Kitchen
 	attr_reader :pantry_path, :recipe_book_path
-	def initialize(kitchen_name=KITCHEN_NAME_DEFAULT, pantry_path=PANTRY_PATH_DEFAULT, recipe_book_path=RECIPE_BOOK_PATH_DEFAULT, 
-									pantry=[], recipe_book=[])
+	def initialize(kitchen_name=KITCHEN_NAME_DEFAULT, pantry_path=PANTRY_PATH_DEFAULT, 
+									recipe_book_path=RECIPE_BOOK_PATH_DEFAULT, pantry=[], recipe_book=[])
 		@kitchen_name = kitchen_name
 		@pantry_path = pantry_path
 		@recipe_book_path = recipe_book_path
@@ -94,11 +93,11 @@ class Kitchen
 	end
 
 	def loadPantryFromFile
-		File.open('@pantry_path', 'r') do |f|
-			while line = f.gets
+		File.open("#{@pantry_path}", "r") do |f|
+			f.each_line do |line|
 				puts line
-# TODO need to parse 'line' and store it properly, line by line, into @pantry
 			end
+# TODO need to parse 'line' and store it properly, line by line, into @pantry
 			return TRUE
 		end
 		return FALSE
@@ -153,7 +152,7 @@ class Kitchen
 	def storeRecipeBookToFile
 		file = File.open(@recipe_book_path, "w")
 		@recipe_book.each do |r|
-#TODO need break down ingredients? or leave it in it's own array?
+#TODO QUESTION need break down ingredients? or leave it in it's own array?
 			file.puts ("#{r.name}\t#{r.whatIngredients}\t#{r.whatDirections}")
 		end
 		file.close unless file == nil
@@ -161,15 +160,16 @@ class Kitchen
 	end
 
 	def loadRecipeBookFromFile
-		File.open('@recipe_book_path', 'r') do |f|
-			while line = f.gets
+		File.open("#{@recipe_book_path}", "r") do |f|
+			f.each_line do |line|
 				puts line
-# TODO need to parse 'line' and store it properly, line by line, into @recipe_book
 			end
+# TODO need to parse 'line' and store it properly, line by line, into @recipe_book
 			return TRUE
 		end
 		return FALSE
 	end
+###
 
 	def changeToDifferentRecipeBook(new_recipe_book_path)
 	end
