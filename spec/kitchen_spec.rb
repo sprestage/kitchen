@@ -4,8 +4,8 @@ require 'spec_helper'
 describe Kitchen do
 	before :each do
 		@default_kitchen = Kitchen.new
-		@non_default_kitchen = Kitchen.new("#{PANTRY_PATH}", "#{RECIPE_BOOK_PATH}")
-		@default_recipe = Recipe.new("default recipe")
+		@non_default_kitchen = Kitchen.new(KITCHEN_NAME_NON_DEFAULT, "#{PANTRY_PATH}", "#{RECIPE_BOOK_PATH}")
+		@default_recipe = Recipe.new("Default Recipe")
 		@non_default_recipe = Recipe.new("Non Default Recipe", INGREDIENTS_NON_DEFAULT, 
 											DIRECTIONS_NON_DEFAULT)
 		@default_pantry_item = PantryItem.new("default pantry item")
@@ -95,22 +95,40 @@ describe Kitchen do
 	end
 
 	describe "#displayPantry" do
-		it "displays entire pantry (default pantry item)" do
+		it "displays entire pantry" do
 			@default_kitchen.addToPantry(@default_pantry_item)
-			@default_kitchen.displayPantry.should eq(TRUE)
-		end
-	end
-
-	describe "#displayPantry" do
-		it "displays entire pantry (non-default pantry item)" do
 			@default_kitchen.addToPantry(@non_default_pantry_item)
 			@default_kitchen.displayPantry.should eq(TRUE)
 		end
 	end
 
 	describe "#displayPantry" do
+		it "displays entire pantry from non-default kitchen" do
+			@non_default_kitchen.addToPantry(@default_pantry_item)
+			@non_default_kitchen.addToPantry(@non_default_pantry_item)
+			@non_default_kitchen.displayPantry.should eq(TRUE)
+		end
+	end
+
+	describe "#displayPantry" do
 		it "displays empty pantry" do
 			@default_kitchen.displayPantry.should eq(TRUE)
+		end
+	end
+
+	describe "#storePantryToFile" do
+		it "successfully opens and stores to default pantry file" do
+			@default_kitchen.addToPantry(@default_pantry_item)
+			@default_kitchen.addToPantry(@non_default_pantry_item)
+			@default_kitchen.storePantryToFile.should eq(TRUE)
+		end
+	end
+
+	describe "#storePantryToFile" do
+		it "successfully opens and stores to non-default pantry file" do
+			@non_default_kitchen.addToPantry(@default_pantry_item)
+			@non_default_kitchen.addToPantry(@non_default_pantry_item)
+			@non_default_kitchen.storePantryToFile.should eq(TRUE)
 		end
 	end
 
@@ -156,16 +174,18 @@ describe Kitchen do
 	end
 
 	describe "#displayRecipeBook" do
-		it "displays entire recipe book (default recipe)" do
+		it "displays entire recipe book" do
 			@default_kitchen.addToRecipeBook(@default_recipe)
+			@default_kitchen.addToRecipeBook(@non_default_recipe)
 			@default_kitchen.displayRecipeBook.should eq(TRUE)
 		end
 	end
 
 	describe "#displayRecipeBook" do
-		it "displays entire recipe book (non-default recipe)" do
-			@default_kitchen.addToRecipeBook(@non_default_recipe)
-			@default_kitchen.displayRecipeBook.should eq(TRUE)
+		it "displays entire recipe book from non-default kitchen" do
+			@non_default_kitchen.addToRecipeBook(@default_recipe)
+			@non_default_kitchen.addToRecipeBook(@non_default_recipe)
+			@non_default_kitchen.displayRecipeBook.should eq(TRUE)
 		end
 	end
 
@@ -176,6 +196,21 @@ describe Kitchen do
 		end
 	end
 
+	describe "#storeRecipeBookToFile" do
+		it "successfully opens and stores to default recipe file" do
+			@default_kitchen.addToRecipeBook(@default_recipe)
+			@default_kitchen.addToRecipeBook(@non_default_recipe)
+			@default_kitchen.storeRecipeBookToFile.should eq(TRUE)
+		end
+	end
+
+	describe "#storeRecipeBookToFile" do
+		it "successfully opens and stores to non-default recipe file" do
+			@non_default_kitchen.addToRecipeBook(@default_recipe)
+			@non_default_kitchen.addToRecipeBook(@non_default_recipe)
+			@non_default_kitchen.storeRecipeBookToFile.should eq(TRUE)
+		end
+	end
 
 
 ### TODO add a regex validator for the user inputted filename.  Probably looking like:

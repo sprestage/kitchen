@@ -32,12 +32,16 @@ require './config'
 #			from the new file.  All subsequent changes will be to the new file.)
 #		J. allow user to gracefully exit program when finished
 #	4. HIGH - Add a README.txt.
+#
+# TODO - NICE TO HAVE FEATURES (for later implementation consideration)
+# 1. Perhaps an inStock addition to PantryItems
 
 # Kitchen is a place that will have Recipes and PantryItems.  
 class Kitchen
 	attr_reader :pantry_path, :recipe_book_path
-	def initialize(pantry_path=PANTRY_PATH_DEFAULT, recipe_book_path=RECIPE_BOOK_PATH_DEFAULT, 
+	def initialize(kitchen_name=KITCHEN_NAME_DEFAULT, pantry_path=PANTRY_PATH_DEFAULT, recipe_book_path=RECIPE_BOOK_PATH_DEFAULT, 
 									pantry=[], recipe_book=[])
+		@kitchen_name = kitchen_name
 		@pantry_path = pantry_path
 		@recipe_book_path = recipe_book_path
 		@pantry = pantry
@@ -67,18 +71,37 @@ class Kitchen
 
 	def displayPantry
 		puts
+		puts ("\t============================")
+		puts ("\t\t#{@kitchen_name} Pantry")
+		puts ("\t============================")
+		puts
 		puts ("Pantry Item Name\t\tFrozen?\t\tStaple?\t\tCategory")
+		puts
 		@pantry.each do |p|
-			print ("#{p.name}\t\t#{p.isFrozen}\t\t#{p.isStaple}\t\t#{p.whichCategory}")
+			print ("#{p.name}\t\t#{p.isFrozen}\t\t#{p.isStaple}\t\t#{p.whichCategory}\n")
 		end
 		puts
 		return TRUE
 	end
 
 	def storePantryToFile
+			file = File.open(@pantry_path, "w")
+			@pantry.each do |p|
+				file.puts ("#{p.name}\t#{p.isFrozen}\t#{p.isStaple}\t#{p.whichCategory}")
+			end
+			file.close unless file == nil
+			return TRUE
 	end
 
 	def loadPantryFromFile
+		File.open('@pantry_path', 'r') do |f|
+			while line = f.gets
+				puts line
+# TODO need to parse 'line' and store it properly, line by line, into @pantry
+			end
+			return TRUE
+		end
+		return FALSE
 	end
 
 	def changeToDifferentPantryFile(new_pantry_path)
@@ -107,6 +130,10 @@ class Kitchen
 
 	def displayRecipeBook
 		puts
+		puts ("======================")
+		puts ("#{@kitchen_name} Recipes")
+		puts ("======================")
+		puts
 		@recipe_book.each do |r|
 			puts ("Recipe: \t\t#{r.name}")
 			puts ("Ingredients: ")
@@ -122,10 +149,26 @@ class Kitchen
 		return TRUE
 	end
 
+###
 	def storeRecipeBookToFile
+		file = File.open(@recipe_book_path, "w")
+		@recipe_book.each do |r|
+#TODO need break down ingredients? or leave it in it's own array?
+			file.puts ("#{r.name}\t#{r.whatIngredients}\t#{r.whatDirections}")
+		end
+		file.close unless file == nil
+		return TRUE
 	end
 
 	def loadRecipeBookFromFile
+		File.open('@recipe_book_path', 'r') do |f|
+			while line = f.gets
+				puts line
+# TODO need to parse 'line' and store it properly, line by line, into @recipe_book
+			end
+			return TRUE
+		end
+		return FALSE
 	end
 
 	def changeToDifferentRecipeBook(new_recipe_book_path)
