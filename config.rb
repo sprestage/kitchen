@@ -1,7 +1,17 @@
 PANTRY_PATH_DEFAULT = "~/Documents/myPantry.txt"
 RECIPE_BOOK_PATH_DEFAULT = "~/Documents/myRecipes.txt"
-CATEGORY_DEFAULT = ""
+
 IS_FROZEN_DEFAULT = FALSE
 IS_STAPLE_DEFAULT = TRUE
+CATEGORY_DEFAULT = ""
+
 INGREDIENTS_DEFAULT = []
 DIRECTIONS_DEFAULT = ""
+
+CATEGORY_NON_DEFAULT = "a category"
+INGREDIENTS_NON_DEFAULT = ["ingred_one","ingred_two","ingred_three"]
+DIRECTIONS_NON_DEFAULT = "Lengthy directions."
+
+FILE_NAME_PREFIX = "~/Documents/susan"
+PANTRY_PATH = "#{FILE_NAME_PREFIX}Pantry.txt"
+RECIPE_BOOK_PATH = "#{FILE_NAME_PREFIX}Recipes.txt"

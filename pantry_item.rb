@@ -5,16 +5,12 @@ require './kitchen'
 class PantryItem < Kitchen
 
 	attr_reader :name
-	def initialize(name, category=CATEGORY_DEFAULT, freezer=IS_FROZEN_DEFAULT, staple=IS_STAPLE_DEFAULT)
+	def initialize(name, freezer=IS_FROZEN_DEFAULT, staple=IS_STAPLE_DEFAULT, category=CATEGORY_DEFAULT)
 		@name = name
 
-		@category = category   # dairy, meat, produce, (which section of grocery store)
 		@freezer = freezer   # stored in the freezer and needs to be thawed, adds prep time
 		@staple = staple   # usually in stock, like spices, flour, sugar, milk, etc
-	end
-
-	def whichCategory
-		return @category
+		@category = category   # dairy, meat, produce, (which section of grocery store)
 	end
 
 	def isFrozen
@@ -23,6 +19,10 @@ class PantryItem < Kitchen
 
 	def isStaple
 		return @staple
+	end
+
+	def whichCategory
+		return @category
 	end
 
 end

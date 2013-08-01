@@ -3,11 +3,9 @@
 require './config'
 
 #TODO - FEATURES
-#	1. Locally store all recipes.
-#	2. Locally store all panty items.
-#	3. Save all recipes and pantry items to file.
-#	4. Load kitchen data from given file, warn if file not present or is empty.
-#	5. Set up user interface:
+#	1. Save all recipes and pantry items to file.
+#	2. Load kitchen data from given file, warn if file not present or is empty.
+#	3. Set up user interface:
 #		A. add recipe
 #			i. enum the possible categories here...but maybe not.  discuss possibilities
 #		B. change recipe
@@ -33,7 +31,7 @@ require './config'
 #			old file, close the old file, open the new file, and finally load the data
 #			from the new file.  All subsequent changes will be to the new file.)
 #		J. allow user to gracefully exit program when finished
-#	6. HIGH - Add a README.txt.
+#	4. HIGH - Add a README.txt.
 
 # Kitchen is a place that will have Recipes and PantryItems.  
 class Kitchen
@@ -46,11 +44,35 @@ class Kitchen
 		@recipe_book = recipe_book
 	end
 
-	def addToPantry
+	def addToPantry(pantry_item)
+		@pantry.each do |p|
+			if p.name.downcase == pantry_item.name.downcase
+				return FALSE
+			end
+		end
+		@pantry.push pantry_item
+		return TRUE
+	end
+
+	def deleteFromPantry(pantry_item)
+		@pantry.each do |p|
+			if p == pantry_item
+				@pantry.delete(pantry_item)
+				return TRUE
+			end
+		end
+		puts ("Cannot delete '#{pantry_item}'.")
+		return FALSE
 	end
 
 	def displayPantry
-		puts @pantry
+		puts
+		puts ("Pantry Item Name\t\tFrozen?\t\tStaple?\t\tCategory")
+		@pantry.each do |p|
+			print ("#{p.name}\t\t#{p.isFrozen}\t\t#{p.isStaple}\t\t#{p.whichCategory}")
+		end
+		puts
+		return TRUE
 	end
 
 	def storePantryToFile
@@ -63,28 +85,41 @@ class Kitchen
 	end
 
 	def addToRecipeBook(recipe)
-		@recipe.each  do |r| 
+		@recipe_book.each  do |r| 
 			if r.name.downcase == recipe.name.downcase 
-				puts ("This recipe, '#{recipe.name}', already exists in the recipe book.")
-				return
+				return FALSE
 			end
 		end
-		puts ("Adding recipe '#{recipe.name}'.")
-		@recipe.push recipe
+		@recipe_book.push recipe
+		return TRUE
 	end
 
 	def deleteFromRecipeBook(recipe)
-		@recipe.each do |r|
+		@recipe_book.each do |r|
 			if r == recipe
-				puts ("Deleting recipe '#{recipe.name}'.")
-				pantry.delete(r)
-				return
+				@recipe_book.delete(recipe)
+				return TRUE
 			end
 		end
+		puts ("Cannot delete '#{recipe.name}'.")
+		return FALSE
 	end
 
 	def displayRecipeBook
-		puts @recipe_book
+		puts
+		@recipe_book.each do |r|
+			puts ("Recipe: \t\t#{r.name}")
+			puts ("Ingredients: ")
+			ingredients_list = r.whatIngredients
+			ingredients_list.each do |i|
+				print ("\t\t\t#{i}\n")
+			end
+			puts ("Directions: ")
+			puts ("\t\t\t#{r.whatDirections}")
+			puts
+		end
+		puts
+		return TRUE
 	end
 
 	def storeRecipeBookToFile

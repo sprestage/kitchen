@@ -2,15 +2,15 @@
 require 'spec_helper'
 
 describe Kitchen do
-	before :all do
-		FILE_NAME_PREFIX = "~/Documents/susan"
-		PANTRY_PATH = "#{FILE_NAME_PREFIX}Pantry.txt"
-		RECIPE_BOOK_PATH = "#{FILE_NAME_PREFIX}Recipes.txt"
-	end
-
 	before :each do
 		@default_kitchen = Kitchen.new
 		@non_default_kitchen = Kitchen.new("#{PANTRY_PATH}", "#{RECIPE_BOOK_PATH}")
+		@default_recipe = Recipe.new("default recipe")
+		@non_default_recipe = Recipe.new("Non Default Recipe", INGREDIENTS_NON_DEFAULT, 
+											DIRECTIONS_NON_DEFAULT)
+		@default_pantry_item = PantryItem.new("default pantry item")
+		@non_default_pantry_item = PantryItem.new("non default pantry item", !IS_FROZEN_DEFAULT, 
+													!IS_STAPLE_DEFAULT, CATEGORY_NON_DEFAULT)
 	end
 	subject { @default_kitchen }
 
@@ -53,11 +53,128 @@ describe Kitchen do
 		end
 	end
 
-	# describe "#addToPantry" do
-	# 	it "" do
-			
-	# 	end
-	# end
+	describe "#addToPantry" do
+		it "successful add default pantry item to pantry" do
+			@default_kitchen.addToPantry(@default_pantry_item).should eq(TRUE)
+		end
+	end
+
+	describe "#addToPantry" do
+		it "successful add non-default pantry item to pantry" do
+			@default_kitchen.addToPantry(@non_default_pantry_item).should eq(TRUE)
+		end
+	end
+
+	describe "#addToPantry" do
+		it "adding duplicate to pantry will fail" do
+			@default_kitchen.addToPantry(@default_pantry_item)
+			@default_kitchen.addToPantry(@default_pantry_item).should_not eq(TRUE)
+		end
+	end
+
+	describe "#deleteFromPantry" do
+		it "successful delete default pantry item from pantry" do
+			@default_kitchen.addToPantry(@default_pantry_item)
+			@default_kitchen.deleteFromPantry(@default_pantry_item).should eq(TRUE)
+		end
+	end
+
+	describe "#deleteFromPantry" do
+		it "successful delete non-default pantry item from pantry" do
+			@default_kitchen.addToPantry(@non_default_pantry_item)
+			@default_kitchen.deleteFromPantry(@non_default_pantry_item).should eq(TRUE)
+		end
+	end
+
+	describe "#deleteFromPantry" do
+		it "cannot delete same pantry item twice from pantry" do
+			@default_kitchen.addToPantry(@default_pantry_item)
+			@default_kitchen.deleteFromPantry(@default_pantry_item)
+			@default_kitchen.deleteFromPantry(@default_pantry_item).should_not eq(TRUE)
+		end
+	end
+
+	describe "#displayPantry" do
+		it "displays entire pantry (default pantry item)" do
+			@default_kitchen.addToPantry(@default_pantry_item)
+			@default_kitchen.displayPantry.should eq(TRUE)
+		end
+	end
+
+	describe "#displayPantry" do
+		it "displays entire pantry (non-default pantry item)" do
+			@default_kitchen.addToPantry(@non_default_pantry_item)
+			@default_kitchen.displayPantry.should eq(TRUE)
+		end
+	end
+
+	describe "#displayPantry" do
+		it "displays empty pantry" do
+			@default_kitchen.displayPantry.should eq(TRUE)
+		end
+	end
+
+	describe "#addToRecipeBook" do
+		it "successful add (default recipe) to recipe book" do
+			@default_kitchen.addToRecipeBook(@default_recipe).should eq(TRUE)
+		end
+	end
+
+	describe "#addToRecipeBook" do
+		it "successful add (non-default recipe) to recipe book" do
+			@default_kitchen.addToRecipeBook(@non_default_recipe).should eq(TRUE)
+		end
+	end
+
+	describe "#addToRecipeBook" do
+		it "adding duplicate to recipe book will fail" do
+			@default_kitchen.addToRecipeBook(@default_recipe)
+			@default_kitchen.addToRecipeBook(@default_recipe).should_not eq(TRUE)
+		end
+	end
+
+	describe "#deleteFromRecipeBook" do
+		it "successful delete (default recipe) from recipe book" do
+			@default_kitchen.addToRecipeBook(@default_recipe)
+			@default_kitchen.deleteFromRecipeBook(@default_recipe).should eq(TRUE)
+		end
+	end
+
+	describe "#deleteFromRecipeBook" do
+		it "successful delete (non-default recipe) from recipe book" do
+			@default_kitchen.addToRecipeBook(@non_default_recipe)
+			@default_kitchen.deleteFromRecipeBook(@non_default_recipe).should eq(TRUE)
+		end
+	end
+
+	describe "#deleteFromRecipeBook" do
+		it "cannot delete same recipe twice from recipe book" do
+			@default_kitchen.addToRecipeBook(@default_recipe)
+			@default_kitchen.deleteFromRecipeBook(@default_recipe)
+			@default_kitchen.deleteFromRecipeBook(@default_recipe).should_not eq(TRUE)
+		end
+	end
+
+	describe "#displayRecipeBook" do
+		it "displays entire recipe book (default recipe)" do
+			@default_kitchen.addToRecipeBook(@default_recipe)
+			@default_kitchen.displayRecipeBook.should eq(TRUE)
+		end
+	end
+
+	describe "#displayRecipeBook" do
+		it "displays entire recipe book (non-default recipe)" do
+			@default_kitchen.addToRecipeBook(@non_default_recipe)
+			@default_kitchen.displayRecipeBook.should eq(TRUE)
+		end
+	end
+
+	describe "#displayRecipeBook" do
+		it "displays empty recipe book" do
+			puts "Display empty recipe book."
+			@default_kitchen.displayRecipeBook.should eq(TRUE)
+		end
+	end
 
 
 

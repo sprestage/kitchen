@@ -2,15 +2,10 @@
 require 'spec_helper'
 
 describe Recipe do
-	before :all do
-		INGREDIENTS_NON_DEFAULT = ["ingred_one","ingred_two","ingred_three"]
-		DIRECTIONS_NON_DEFAULT = "Lengthy directions."
-	end
-
 	before :each do
 		@default_recipe = Recipe.new("Default Recipe")
-		@non_default_recipe = Recipe.new("Non Default Recipe", 
-																				INGREDIENTS_NON_DEFAULT, DIRECTIONS_NON_DEFAULT)
+		@non_default_recipe = Recipe.new("Non Default Recipe", INGREDIENTS_NON_DEFAULT, 
+											DIRECTIONS_NON_DEFAULT)
 		@recipe = Recipe.new("My Recipe")
 	end
 

@@ -2,14 +2,10 @@
 require 'spec_helper'
 
 describe PantryItem do
-	before :all do
-		CATEGORY_NON_DEFAULT = "a category"
-	end
-
 	before :each do
 		@default_pantry_item = PantryItem.new("default pantry item")
-		@non_default_pantry_item = PantryItem.new("non default pantry item", CATEGORY_NON_DEFAULT, 
-																									!IS_FROZEN_DEFAULT, !IS_STAPLE_DEFAULT)
+		@non_default_pantry_item = PantryItem.new("non default pantry item", !IS_FROZEN_DEFAULT, 
+													!IS_STAPLE_DEFAULT, CATEGORY_NON_DEFAULT)
 		@pantry_item = PantryItem.new("pantry item")
 	end
 
@@ -27,24 +23,6 @@ describe PantryItem do
     	it "takes all four parameters and returns a PantryItem object" do
         	@non_default_pantry_item.should be_an_instance_of PantryItem
     	end
-	end
-
-	describe "#whichCategory" do
-		it "default should be an empty string" do
-			@default_pantry_item.whichCategory.should eq(CATEGORY_DEFAULT)
-		end
-	end
-
-	describe "#whichCategory" do
-		it "category is a string" do
-			@default_pantry_item.whichCategory.is_a?(String).should eq(TRUE)
-		end
-	end
-
-	describe "#whichCategory" do
-		it "non-default string can be set" do
-			@non_default_pantry_item.whichCategory.should eq(CATEGORY_NON_DEFAULT)
-		end
 	end
 
 	describe "#isFrozen" do
@@ -68,6 +46,24 @@ describe PantryItem do
 	describe "#isStaple" do
 		it "non-default value can be FALSE" do
 			@non_default_pantry_item.isStaple.should_not eq(IS_STAPLE_DEFAULT)
+		end
+	end
+
+	describe "#whichCategory" do
+		it "default should be an empty string" do
+			@default_pantry_item.whichCategory.should eq(CATEGORY_DEFAULT)
+		end
+	end
+
+	describe "#whichCategory" do
+		it "category is a string" do
+			@default_pantry_item.whichCategory.is_a?(String).should eq(TRUE)
+		end
+	end
+
+	describe "#whichCategory" do
+		it "non-default string can be set" do
+			@non_default_pantry_item.whichCategory.should eq(CATEGORY_NON_DEFAULT)
 		end
 	end
 
