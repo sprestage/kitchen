@@ -26,19 +26,19 @@ describe Recipe do
 	end
 
 	describe "#whatIngredients" do
-		it "default should be an empty string" do
+		it "default should be an empty array" do
 			@default_recipe.whatIngredients.should eq(INGREDIENTS_DEFAULT)
 		end
 	end
 
 	describe "#whatIngredients" do
-		it "ingredients is a string" do
+		it "ingredients is an array" do
 			@default_recipe.whatIngredients.is_a?(Array).should eq(TRUE)
 		end
 	end
 
 	describe "#whatIngredients" do
-		it "non-default string can be set" do
+		it "non-default array can be set" do
 			@non_default_recipe.whatIngredients.should eq(INGREDIENTS_NON_DEFAULT)
 		end
 	end

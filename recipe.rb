@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 ### recipe.rb
-require './kitchen'
+require './config'
 
-class Recipe < Kitchen
+class Recipe 
 	attr_reader :name
 	def initialize(name, ingredients=INGREDIENTS_DEFAULT, directions=DIRECTIONS_DEFAULT)
 		@name = name

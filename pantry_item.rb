@@ -1,13 +1,12 @@
 #!/usr/bin/env ruby
-### recipe.rb
-require './kitchen'
+### pantry_item.rb
+require './config'
 
-class PantryItem < Kitchen
+class PantryItem
 
 	attr_reader :name
 	def initialize(name, freezer=IS_FROZEN_DEFAULT, staple=IS_STAPLE_DEFAULT, category=CATEGORY_DEFAULT)
 		@name = name
-
 		@freezer = freezer   # stored in the freezer and needs to be thawed, adds prep time
 		@staple = staple   # usually in stock, like spices, flour, sugar, milk, etc
 		@category = category   # dairy, meat, produce, (which section of grocery store)

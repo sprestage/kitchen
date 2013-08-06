@@ -26,11 +26,11 @@ require './config'
 #				c. list items by all categories
 #				d. list only items in given categories				
 #		H. dump latest info to file
-#		I. allow user to change to new data file  (This will save current data to the
-#			old file, close the old file, open the new file, and finally load the data
-#			from the new file.  All subsequent changes will be to the new file.)
+#		I. allow user to change to new data file for both recipe_book and pantry  (This 
+#			will save current data to the old file, close the old file, open the new file, 
+#			and finally load the data from the new file.  All subsequent changes will be 
+#			to the new file.)
 #		J. allow user to gracefully exit program when finished
-#	3. HIGH - Add a README.txt.
 #
 # TODO - NICE TO HAVE FEATURES (for later implementation consideration)
 # 1. Perhaps an inStock addition to PantryItems
@@ -39,7 +39,7 @@ require './config'
 class Kitchen
 	attr_reader :pantry_path, :recipe_book_path
 	def initialize(kitchen_name=KITCHEN_NAME_DEFAULT, pantry_path=PANTRY_PATH_DEFAULT, 
-									recipe_book_path=RECIPE_BOOK_PATH_DEFAULT, pantry=[], recipe_book=[])
+					recipe_book_path=RECIPE_BOOK_PATH_DEFAULT, pantry=[], recipe_book=[])
 		@kitchen_name = kitchen_name
 		@pantry_path = pantry_path
 		@recipe_book_path = recipe_book_path
@@ -64,7 +64,6 @@ class Kitchen
 				return TRUE
 			end
 		end
-		puts ("Cannot delete '#{pantry_item}'.")
 		return FALSE
 	end
 
@@ -84,20 +83,40 @@ class Kitchen
 	end
 
 	def storePantryToFile
-			file = File.open(@pantry_path, "w")
-			@pantry.each do |p|
-				file.puts ("#{p.name}\t#{p.isFrozen}\t#{p.isStaple}\t#{p.whichCategory}")
-			end
-			file.close unless file == nil
-			return TRUE
+		file = File.open(@pantry_path, "w")
+		@pantry.each do |p|
+			file.puts ("#{p.name}")
+			file.puts ("#{p.isFrozen}")
+			file.puts ("#{p.isStaple}")
+			file.puts ("#{p.whichCategory}")
+		end
+		file.close unless file == nil
+		return TRUE
 	end
 
 	def loadPantryFromFile
 		File.open("#{@pantry_path}", "r") do |f|
+			count = 0
+			name = ""
+			freezer = ""
+			staple = ""
+			category = ""
 			f.each_line do |line|
-				puts line
+				line = line.gsub(/\n/," ")
+				count = count + 1
+				if count == 1
+					name = line
+				elsif count == 2
+					freezer = line
+				elsif count == 3
+					staple = line
+				else
+					category = line
+					a_pantry_item = PantryItem.new(name, freezer, staple, category)
+					@pantry.push a_pantry_item
+					count = 0
+				end
 			end
-# TODO need to parse 'line' and store it properly, line by line, into @pantry
 			return TRUE
 		end
 		return FALSE
@@ -123,7 +142,6 @@ class Kitchen
 				return TRUE
 			end
 		end
-		puts ("Cannot delete '#{recipe.name}'.")
 		return FALSE
 	end
 
@@ -148,34 +166,47 @@ class Kitchen
 		return TRUE
 	end
 
-###
 	def storeRecipeBookToFile
 		file = File.open(@recipe_book_path, "w")
-		@recipe_book.each do |r|
-#TODO QUESTION need break down ingredients? or leave it in it's own array?
-			file.puts ("#{r.name}\t#{r.whatIngredients}\t#{r.whatDirections}")
+		if file == nil
+			return FALSE
+		else
+			@recipe_book.each do |r|
+				file.puts ("#{r.name}")
+				file.puts ("#{r.whatIngredients}")
+				file.puts ("#{r.whatDirections}")
+			end
+			file.close unless file == nil
+			return TRUE
 		end
-		file.close unless file == nil
-		return TRUE
 	end
 
 	def loadRecipeBookFromFile
-		File.open("#{@recipe_book_path}", "r") do |f|
-			f.each_line do |line|
-				puts line
+		if @recipe_book_path.length == 0
+			return FALSE
+		else
+			File.open("#{@recipe_book_path}", "r") do |f|
+				count = 0
+				name = ""
+				ingredients = []
+				directions = ""
+				f.each_line do |line|
+					count = count + 1
+					if count == 1
+						name = line
+					elsif count == 2
+						line.gsub!(/(\,)(\S)/, "\\1 \\2")
+						ingredients = YAML::load(line)
+					else
+						directions = line
+						a_recipe = Recipe.new(name, ingredients, directions)
+						@recipe_book.push a_recipe
+						count = 0
+					end
+				end
+				return TRUE
 			end
-# TODO need to parse 'line' and store it properly, line by line, into @recipe_book
-			return TRUE
-		end
-		return FALSE
+		end		
 	end
-###
-
-	def changeToDifferentRecipeBook(new_recipe_book_path)
-	end
-
 end
-
-
-
 

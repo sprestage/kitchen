@@ -5,12 +5,19 @@ describe Kitchen do
 	before :each do
 		@default_kitchen = Kitchen.new
 		@non_default_kitchen = Kitchen.new(KITCHEN_NAME_NON_DEFAULT, "#{PANTRY_PATH}", "#{RECIPE_BOOK_PATH}")
+		@visible_kitchen = Kitchen.new("RECOGNIZABLE KITCHEN NAME", "/Users/susan/Documents/xxxRecipeBookxxx")
+		@empty_kitchen = Kitchen.new("empty kitchen", "", "")
+
+		@default_pantry_item = PantryItem.new("default pantry item")
+		@non_default_pantry_item = PantryItem.new("non default pantry item", IS_FROZEN_NON_DEFAULT, 
+													IS_STAPLE_NON_DEFAULT, CATEGORY_NON_DEFAULT)
+ 		@visible_pantry_item = PantryItem.new("RECOGNIZABLE Pantry Item NAME")
+
 		@default_recipe = Recipe.new("Default Recipe")
 		@non_default_recipe = Recipe.new("Non Default Recipe", INGREDIENTS_NON_DEFAULT, 
 											DIRECTIONS_NON_DEFAULT)
-		@default_pantry_item = PantryItem.new("default pantry item")
-		@non_default_pantry_item = PantryItem.new("non default pantry item", !IS_FROZEN_DEFAULT, 
-													!IS_STAPLE_DEFAULT, CATEGORY_NON_DEFAULT)
+		# @a_recipe = Recipe.new("A Recipe")
+ 		@visible_recipe = Recipe.new("RECOGNIZABLE Recipe NAME")
 	end
 	subject { @default_kitchen }
 
@@ -106,6 +113,7 @@ describe Kitchen do
 		it "displays entire pantry from non-default kitchen" do
 			@non_default_kitchen.addToPantry(@default_pantry_item)
 			@non_default_kitchen.addToPantry(@non_default_pantry_item)
+			@non_default_kitchen.addToPantry(@visible_pantry_item)
 			@non_default_kitchen.displayPantry.should eq(TRUE)
 		end
 	end
@@ -128,13 +136,14 @@ describe Kitchen do
 		it "successfully opens and stores to non-default pantry file" do
 			@non_default_kitchen.addToPantry(@default_pantry_item)
 			@non_default_kitchen.addToPantry(@non_default_pantry_item)
+			@non_default_kitchen.addToPantry(@visible_pantry_item)
 			@non_default_kitchen.storePantryToFile.should eq(TRUE)
 		end
 	end
 
-###
 	describe "#loadPantryFromFile" do
 		it "successfully opens and loads from default pantry file" do
+			@default_kitchen.displayPantry
 			@default_kitchen.loadPantryFromFile.should eq(TRUE)
 			@default_kitchen.displayPantry
 		end
@@ -142,6 +151,7 @@ describe Kitchen do
 
 	describe "#loadPantryFromFile" do
 		it "successfully opens and loads from non-default pantry file" do
+			@non_default_kitchen.displayPantry
 			@non_default_kitchen.loadPantryFromFile.should eq(TRUE)
 			@non_default_kitchen.displayPantry
 		end
@@ -152,6 +162,28 @@ describe Kitchen do
 #TODO implement successfully handles empty/absent pantry file unit test
 
 		end
+
+# 	describe "#loadRecipeBookFromFile" do
+# 		it "successfully opens and loads from default recipe file" do
+# 			@default_kitchen.loadRecipeBookFromFile.should eq(TRUE)
+# 		end
+# 	end
+
+# 	describe "#loadRecipeBookFromFile" do
+# 		it "successfully opens and loads from non-default recipe file" do
+# 			@non_default_kitchen.loadRecipeBookFromFile.should eq(TRUE)
+# 		end
+# 	end
+
+
+
+# # 	describe "#loadRecipeBookFromFile" do
+# # 		it "successfully handles empty/absent recipe file" do
+# # #TODO implement successfully handles empty/absent recipe book file unit test
+# # 		end
+# # 	end
+
+
 	end
 ###
 
@@ -208,6 +240,7 @@ describe Kitchen do
 		it "displays entire recipe book from non-default kitchen" do
 			@non_default_kitchen.addToRecipeBook(@default_recipe)
 			@non_default_kitchen.addToRecipeBook(@non_default_recipe)
+			@non_default_kitchen.addToRecipeBook(@visible_recipe)
 			@non_default_kitchen.displayRecipeBook.should eq(TRUE)
 		end
 	end
@@ -220,7 +253,7 @@ describe Kitchen do
 	end
 
 	describe "#storeRecipeBookToFile" do
-		it "successfully opens and stores to default recipe file" do
+		it "successfully opens and stores to default recipe book file" do
 			@default_kitchen.addToRecipeBook(@default_recipe)
 			@default_kitchen.addToRecipeBook(@non_default_recipe)
 			@default_kitchen.storeRecipeBookToFile.should eq(TRUE)
@@ -228,30 +261,31 @@ describe Kitchen do
 	end
 
 	describe "#storeRecipeBookToFile" do
-		it "successfully opens and stores to non-default recipe file" do
+		it "successfully opens and stores to non-default recipe book file" do
 			@non_default_kitchen.addToRecipeBook(@default_recipe)
 			@non_default_kitchen.addToRecipeBook(@non_default_recipe)
+			@non_default_kitchen.addToRecipeBook(@visible_recipe)
 			@non_default_kitchen.storeRecipeBookToFile.should eq(TRUE)
 		end
 	end
 
 	describe "#loadRecipeBookFromFile" do
-		it "successfully opens and loads from default recipe file" do
+		it "successfully opens and loads from default recipe book file" do
 			@default_kitchen.loadRecipeBookFromFile.should eq(TRUE)
-			@default_kitchen.displayRecipeBook
 		end
 	end
 
 	describe "#loadRecipeBookFromFile" do
-		it "successfully opens and loads from non-default recipe file" do
+		it "successfully opens and loads from non-default recipe book file" do
 			@non_default_kitchen.loadRecipeBookFromFile.should eq(TRUE)
-			@non_default_kitchen.displayRecipeBook
 		end
 	end
+
+
 
 	describe "#loadRecipeBookFromFile" do
 		it "successfully handles empty/absent recipe file" do
-#TODO implement successfully handles empty/absent recipe book file unit test
+			@empty_kitchen.loadRecipeBookFromFile.should_not eq(TRUE)
 		end
 	end
 

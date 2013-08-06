@@ -4,8 +4,8 @@ require 'spec_helper'
 describe PantryItem do
 	before :each do
 		@default_pantry_item = PantryItem.new("default pantry item")
-		@non_default_pantry_item = PantryItem.new("non default pantry item", !IS_FROZEN_DEFAULT, 
-													!IS_STAPLE_DEFAULT, CATEGORY_NON_DEFAULT)
+		@non_default_pantry_item = PantryItem.new("non default pantry item", IS_FROZEN_NON_DEFAULT, 
+													IS_STAPLE_NON_DEFAULT, CATEGORY_NON_DEFAULT)
 		@pantry_item = PantryItem.new("pantry item")
 	end
 
@@ -33,7 +33,7 @@ describe PantryItem do
 
 	describe "#isFrozen" do
 		it "non-default value can be TRUE" do
-			@non_default_pantry_item.isFrozen.should_not eq(IS_FROZEN_DEFAULT)
+			@non_default_pantry_item.isFrozen.should eq(IS_FROZEN_NON_DEFAULT)
 		end
 	end
 
@@ -45,7 +45,7 @@ describe PantryItem do
 
 	describe "#isStaple" do
 		it "non-default value can be FALSE" do
-			@non_default_pantry_item.isStaple.should_not eq(IS_STAPLE_DEFAULT)
+			@non_default_pantry_item.isStaple.should eq(IS_STAPLE_NON_DEFAULT)
 		end
 	end
 
