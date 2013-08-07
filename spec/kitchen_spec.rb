@@ -17,7 +17,8 @@ describe Kitchen do
 		@non_default_recipe = Recipe.new("Non Default Recipe", INGREDIENTS_NON_DEFAULT, 
 											DIRECTIONS_NON_DEFAULT)
 		# @a_recipe = Recipe.new("A Recipe")
- 		@visible_recipe = Recipe.new("RECOGNIZABLE Recipe NAME")
+ 		@visible_recipe = Recipe.new("RECOGNIZABLE Recipe NAME", INGREDIENTS_NON_DEFAULT, 
+											DIRECTIONS_NON_DEFAULT)
 	end
 	subject { @default_kitchen }
 
@@ -143,49 +144,22 @@ describe Kitchen do
 
 	describe "#loadPantryFromFile" do
 		it "successfully opens and loads from default pantry file" do
-			@default_kitchen.displayPantry
 			@default_kitchen.loadPantryFromFile.should eq(TRUE)
-			@default_kitchen.displayPantry
 		end
 	end
 
 	describe "#loadPantryFromFile" do
 		it "successfully opens and loads from non-default pantry file" do
-			@non_default_kitchen.displayPantry
 			@non_default_kitchen.loadPantryFromFile.should eq(TRUE)
-			@non_default_kitchen.displayPantry
 		end
 	end
 
 	describe "#loadPantryFromFile" do
 		it "successfully handles empty/absent pantry file" do
-#TODO implement successfully handles empty/absent pantry file unit test
-
+			@empty_kitchen.loadPantryFromFile.should_not eq(TRUE)
 		end
-
-# 	describe "#loadRecipeBookFromFile" do
-# 		it "successfully opens and loads from default recipe file" do
-# 			@default_kitchen.loadRecipeBookFromFile.should eq(TRUE)
-# 		end
-# 	end
-
-# 	describe "#loadRecipeBookFromFile" do
-# 		it "successfully opens and loads from non-default recipe file" do
-# 			@non_default_kitchen.loadRecipeBookFromFile.should eq(TRUE)
-# 		end
-# 	end
-
-
-
-# # 	describe "#loadRecipeBookFromFile" do
-# # 		it "successfully handles empty/absent recipe file" do
-# # #TODO implement successfully handles empty/absent recipe book file unit test
-# # 		end
-# # 	end
-
-
 	end
-###
+
 
 	describe "#addToRecipeBook" do
 		it "successful add (default recipe) to recipe book" do
@@ -247,7 +221,6 @@ describe Kitchen do
 
 	describe "#displayRecipeBook" do
 		it "displays empty recipe book" do
-			puts "Display empty recipe book."
 			@default_kitchen.displayRecipeBook.should eq(TRUE)
 		end
 	end
@@ -280,8 +253,6 @@ describe Kitchen do
 			@non_default_kitchen.loadRecipeBookFromFile.should eq(TRUE)
 		end
 	end
-
-
 
 	describe "#loadRecipeBookFromFile" do
 		it "successfully handles empty/absent recipe file" do

@@ -1,21 +1,21 @@
 #!/usr/bin/env ruby
 ### kitchen.rb
 require './config'
+require 'table_print'
 
 #TODO - FEATURES
-#	1. Load kitchen data from given file, warn if file not present or is empty.
-#	2. Set up user interface:
-#		A. add recipe
+#	1. Set up user interface:
+#		A. change recipe
+#		B. list recipes in kitchen
+#			i. DONE - list all recipes, long version
+#			ii. list all recipes, only by name
+#			iii. list just recipes fitting parameters?  This should probably move to NICE TO HAVE.
+#		C. delete recipe
+#		D. add pantry item
 #			i. enum the possible categories here...but maybe not.  discuss possibilities
-#		B. change recipe
-#		C. list recipes in kitchen
-#			i. list all recipes
-#			ii. list just recipes fitting parameters
-#		D. delete recipe
-#		E. add panty item
-#		F. change pantry item
-#		G. list pantry items in kitchen
-#			i. list all pantry items
+#		E. change pantry item
+#		F. list pantry items in kitchen
+#			i. DONE - list all pantry items
 #			ii. list pantry items by category
 #			iii. list only pantry items in given category
 #			iv. list frozen/not frozen pantry items
@@ -25,15 +25,15 @@ require './config'
 #				b. list staple/not staple items needed for recipe
 #				c. list items by all categories
 #				d. list only items in given categories				
-#		H. dump latest info to file
-#		I. allow user to change to new data file for both recipe_book and pantry  (This 
+#		G. dump latest info to file
+#		H. allow user to change to new data file for both recipe_book and pantry  (This 
 #			will save current data to the old file, close the old file, open the new file, 
 #			and finally load the data from the new file.  All subsequent changes will be 
 #			to the new file.)
-#		J. allow user to gracefully exit program when finished
 #
 # TODO - NICE TO HAVE FEATURES (for later implementation consideration)
 # 1. Perhaps an inStock addition to PantryItems
+
 
 # Kitchen is a place that will have Recipes and PantryItems.  
 class Kitchen
@@ -68,17 +68,24 @@ class Kitchen
 	end
 
 	def displayPantry
-		puts
-		puts ("\t============================")
-		puts ("\t\t#{@kitchen_name} Pantry")
-		puts ("\t============================")
-		puts
-		puts ("Pantry Item Name\t\tFrozen?\t\tStaple?\t\tCategory")
-		puts
-		@pantry.each do |p|
-			print ("#{p.name}\t\t#{p.isFrozen}\t\t#{p.isStaple}\t\t#{p.whichCategory}\n")
+		if DEBUG
+			puts
+			puts ("\t======================================================")
+			puts ("\t\t\t    #{@kitchen_name} Pantry")
+			puts ("\t======================================================")
+			puts
+			puts
+			tp @pantry, :name, {:frozen => {:display_method => :isFrozen}}, {:staple => {:display_method => :isStaple}}, {:category => {:display_method => :whichCategory}}
 		end
-		puts
+		# 	puts ("Pantry Item Name\t\tFrozen?\t\tStaple?\t\tCategory")
+		# 	puts
+		# end
+		# @pantry.each do |p|
+		# 	if !DEBUG
+		# 		print ("#{p.name}\t\t#{p.isFrozen.rjust(40)}\t\t#{p.isStaple.rjust(30)}\t\t#{p.whichCategory.ljust(35)}\n")
+		# 	end
+		# end
+		# if !DEBUG then puts end
 		return TRUE
 	end
 
@@ -95,31 +102,34 @@ class Kitchen
 	end
 
 	def loadPantryFromFile
-		File.open("#{@pantry_path}", "r") do |f|
-			count = 0
-			name = ""
-			freezer = ""
-			staple = ""
-			category = ""
-			f.each_line do |line|
-				line = line.gsub(/\n/," ")
-				count = count + 1
-				if count == 1
-					name = line
-				elsif count == 2
-					freezer = line
-				elsif count == 3
-					staple = line
-				else
-					category = line
-					a_pantry_item = PantryItem.new(name, freezer, staple, category)
-					@pantry.push a_pantry_item
-					count = 0
+		if @pantry_path.length == 0
+			return FALSE
+		else
+			File.open("#{@pantry_path}", "r") do |f|
+				count = 0
+				name = ""
+				freezer = ""
+				staple = ""
+				category = ""
+				f.each_line do |line|
+					line = line.gsub(/\n/," ")
+					count = count + 1
+					if count == 1
+						name = line
+					elsif count == 2
+						freezer = line
+					elsif count == 3
+						staple = line
+					else
+						category = line
+						a_pantry_item = PantryItem.new(name, freezer, staple, category)
+						@pantry.push a_pantry_item
+						count = 0
+					end
 				end
+				return TRUE
 			end
-			return TRUE
 		end
-		return FALSE
 	end
 
 	def changeToDifferentPantryFile(new_pantry_path)
@@ -146,23 +156,32 @@ class Kitchen
 	end
 
 	def displayRecipeBook
-		puts
-		puts ("======================")
-		puts ("#{@kitchen_name} Recipes")
-		puts ("======================")
-		puts
-		@recipe_book.each do |r|
-			puts ("Recipe: \t\t#{r.name}")
-			puts ("Ingredients: ")
-			ingredients_list = r.whatIngredients
-			ingredients_list.each do |i|
-				print ("\t\t\t#{i}\n")
-			end
-			puts ("Directions: ")
-			puts ("\t\t\t#{r.whatDirections}")
+		if DEBUG
+			puts
+			puts ("\t======================")
+			puts ("\t    #{@kitchen_name} Recipes")
+			puts ("\t======================")
+			puts
 			puts
 		end
-		puts
+		@recipe_book.each do |r|
+			if DEBUG
+				puts ("#{r.name}")
+				puts
+			end
+			ingredients_list = r.whatIngredients
+			ingredients_list.each do |i|
+				if DEBUG
+					puts ("\t#{i}")
+				end
+			end
+			if DEBUG
+				puts
+				puts r.whatDirections.split( /(.{,100}\S)\s+/ ).reject( &:empty? )
+				puts
+				puts
+			end
+		end
 		return TRUE
 	end
 
@@ -209,4 +228,10 @@ class Kitchen
 		end		
 	end
 end
+
+###
+# BEGIN UI
+###
+
+
 
