@@ -8,31 +8,31 @@ require 'table_print'
 #		A. change recipe
 #		B. list recipes in kitchen
 #			i. DONE - list all recipes, long version
-#			ii. list all recipes, only by name
+#			ii. DONE - list all recipes, only by name
 #			iii. list just recipes fitting parameters?  This should probably move to NICE TO HAVE.
-#		C. delete recipe
-#		D. add pantry item
-#			i. enum the possible categories here...but maybe not.  discuss possibilities
-#		E. change pantry item
-#		F. list pantry items in kitchen
+#		C. change pantry item
+#		D. list pantry items in kitchen
 #			i. DONE - list all pantry items
-#			ii. list pantry items by category
-#			iii. list only pantry items in given category
-#			iv. list frozen/not frozen pantry items
-#			v. list staple/not staple pantry items
-#			vi. list pantry items needed for recipe
+#			ii. DONE - list pantry items by name only
+#			iii. list pantry items by category
+#			iv. list only pantry items in given category
+#			v. list frozen/not frozen pantry items
+#			vi. list staple/not staple pantry items
+#			vii. list pantry items needed for recipe
 #				a. list frozen/not frozen items needed for recipe
 #				b. list staple/not staple items needed for recipe
 #				c. list items by all categories
 #				d. list only items in given categories				
-#		G. dump latest info to file
-#		H. allow user to change to new data file for both recipe_book and pantry  (This 
+#		E. dump latest info to file
+#		F. allow user to change to new data file for both recipe_book and pantry  (This 
 #			will save current data to the old file, close the old file, open the new file, 
 #			and finally load the data from the new file.  All subsequent changes will be 
 #			to the new file.)
 #
 # TODO - NICE TO HAVE FEATURES (for later implementation consideration)
 # 1. Perhaps an inStock addition to PantryItems
+# 2. Perhaps a glutenFree and dairyFree addition to Recipes and PantryItems, or perhaps 
+#      just a aaronSafe bit for both.
 
 
 # Kitchen is a place that will have Recipes and PantryItems.  
@@ -57,6 +57,14 @@ class Kitchen
 		return TRUE
 	end
 
+	def whichPantryItem(pantry_item_name)
+		@pantry.each do |p|
+			if p.name.downcase == pantry_item_name.downcase
+				return p
+			end
+		end
+	end
+
 	def deleteFromPantry(pantry_item)
 		@pantry.each do |p|
 			if p == pantry_item
@@ -77,15 +85,6 @@ class Kitchen
 			puts
 			tp @pantry, :name, {:frozen => {:display_method => :isFrozen}}, {:staple => {:display_method => :isStaple}}, {:category => {:display_method => :whichCategory}}
 		end
-		# 	puts ("Pantry Item Name\t\tFrozen?\t\tStaple?\t\tCategory")
-		# 	puts
-		# end
-		# @pantry.each do |p|
-		# 	if !DEBUG
-		# 		print ("#{p.name}\t\t#{p.isFrozen.rjust(40)}\t\t#{p.isStaple.rjust(30)}\t\t#{p.whichCategory.ljust(35)}\n")
-		# 	end
-		# end
-		# if !DEBUG then puts end
 		return TRUE
 	end
 
@@ -145,6 +144,14 @@ class Kitchen
 		return TRUE
 	end
 
+	def whichRecipe(recipe_name)
+		@recipe_book.each do |r|
+			if r.name.downcase == recipe_name.downcase
+				return r
+			end
+		end
+	end
+
 	def deleteFromRecipeBook(recipe)
 		@recipe_book.each do |r|
 			if r == recipe
@@ -153,6 +160,18 @@ class Kitchen
 			end
 		end
 		return FALSE
+	end
+
+	def displayRecipe(recipe_name)
+		puts "THIS ROUTINE SHOULD PRINT THE RECIPE: #{recipe_name}"
+		@recipe_book.each do |r|
+			puts "FOUND RECIPE = #{r.name.downcase}, class = #{r.name.class}"
+			puts "LISTED RECIPE = #{recipe_name.downcase}, class = #{recipe_name.class}"
+			if r.name.downcase == recipe_name.downcase
+				puts "FOUND IT!"
+				@recipe_book.delete(r)
+			end
+		end
 	end
 
 	def displayRecipeBook
@@ -180,6 +199,23 @@ class Kitchen
 				puts r.whatDirections.split( /(.{,100}\S)\s+/ ).reject( &:empty? )
 				puts
 				puts
+			end
+		end
+		return TRUE
+	end
+
+	def displayRecipeNames
+		if DEBUG
+			puts
+			puts ("\t======================")
+			puts ("\t    #{@kitchen_name} Recipes")
+			puts ("\t======================")
+			puts
+			puts
+		end
+		@recipe_book.each do |r|
+			if DEBUG
+				puts ("#{r.name}")
 			end
 		end
 		return TRUE
