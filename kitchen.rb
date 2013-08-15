@@ -11,33 +11,23 @@ require 'table_print'
 #			ii. DONE - list all recipes, only by name
 #			iii. list just recipes fitting parameters?  This should probably move to NICE TO HAVE.
 #		C. change pantry item
-#		D. list pantry items in kitchen
-#			i. DONE - list all pantry items
-#			ii. DONE - list pantry items by name only
-#			iii. list pantry items by category
-#			iv. list only pantry items in given category
-#			v. list frozen/not frozen pantry items
-#			vi. list staple/not staple pantry items
-#			vii. list pantry items needed for recipe
-#				a. list frozen/not frozen items needed for recipe
-#				b. list staple/not staple items needed for recipe
-#				c. list items by all categories
-#				d. list only items in given categories				
-#		E. dump latest info to file
-#		F. allow user to change to new data file for both recipe_book and pantry  (This 
-#			will save current data to the old file, close the old file, open the new file, 
-#			and finally load the data from the new file.  All subsequent changes will be 
-#			to the new file.)
 #
 # TODO - NICE TO HAVE FEATURES (for later implementation consideration)
-# 1. Perhaps an inStock addition to PantryItems
-# 2. Perhaps a glutenFree and dairyFree addition to Recipes and PantryItems, or perhaps 
-#      just a aaronSafe bit for both.
+#	1. Add inStock to PantryItems
+#	2. Add a glutenFree and dairyFree to Recipes and PantryItems, or perhaps 
+#		just a aaronSafe bit for both.
+#	3. List pantry items by category, frozen, staple
+#	4. List pantry items needed for recipe
+#		A. list frozen/not frozen items needed for recipe
+#		B. list staple/not staple items needed for recipe
+#		C. list items by all categories
+#		D. list only items in given categories	
+#	5.	List recipes that fit certain parameters (like GF, dairy free, etc)			
 
 
 # Kitchen is a place that will have Recipes and PantryItems.  
 class Kitchen
-	attr_reader :pantry_path, :recipe_book_path
+	attr_accessor :pantry_path, :recipe_book_path
 	def initialize(kitchen_name=KITCHEN_NAME_DEFAULT, pantry_path=PANTRY_PATH_DEFAULT, 
 					recipe_book_path=RECIPE_BOOK_PATH_DEFAULT, pantry=[], recipe_book=[])
 		@kitchen_name = kitchen_name
@@ -57,7 +47,7 @@ class Kitchen
 		return TRUE
 	end
 
-	def whichPantryItem(pantry_item_name)
+	def getPantryItemByName(pantry_item_name)
 		@pantry.each do |p|
 			if p.name.downcase == pantry_item_name.downcase
 				return p
@@ -75,12 +65,16 @@ class Kitchen
 		return FALSE
 	end
 
+	def deleteCurrentPantry
+		@pantry = []
+	end
+
 	def displayPantry
 		if DEBUG
 			puts
-			puts ("\t======================================================")
-			puts ("\t\t\t    #{@kitchen_name} Pantry")
-			puts ("\t======================================================")
+			puts "\t======================================================"
+			puts "\t\t\t    #{@kitchen_name} Pantry"
+			puts "\t======================================================"
 			puts
 			puts
 			tp @pantry, :name, {:frozen => {:display_method => :isFrozen}}, {:staple => {:display_method => :isStaple}}, {:category => {:display_method => :whichCategory}}
@@ -89,12 +83,12 @@ class Kitchen
 	end
 
 	def storePantryToFile
-		file = File.open(@pantry_path, "w")
+		file = File.new(@pantry_path, "w")
 		@pantry.each do |p|
-			file.puts ("#{p.name}")
-			file.puts ("#{p.isFrozen}")
-			file.puts ("#{p.isStaple}")
-			file.puts ("#{p.whichCategory}")
+			file.puts "#{p.name}"
+			file.puts "#{p.isFrozen}"
+			file.puts "#{p.isStaple}"
+			file.puts "#{p.whichCategory}"
 		end
 		file.close unless file == nil
 		return TRUE
@@ -132,6 +126,7 @@ class Kitchen
 	end
 
 	def changeToDifferentPantryFile(new_pantry_path)
+		@pantry_path = new_pantry_path
 	end
 
 	def addToRecipeBook(recipe)
@@ -144,7 +139,7 @@ class Kitchen
 		return TRUE
 	end
 
-	def whichRecipe(recipe_name)
+	def getRecipeByName(recipe_name)
 		@recipe_book.each do |r|
 			if r.name.downcase == recipe_name.downcase
 				return r
@@ -162,44 +157,59 @@ class Kitchen
 		return FALSE
 	end
 
-	def displayRecipe(recipe_name)
-		puts "THIS ROUTINE SHOULD PRINT THE RECIPE: #{recipe_name}"
+	def deleteCurrentRecipeBook
+		@recipe_book = []
+	end
+
+	def displayRecipeByName(recipe_name)
 		@recipe_book.each do |r|
-			puts "FOUND RECIPE = #{r.name.downcase}, class = #{r.name.class}"
-			puts "LISTED RECIPE = #{recipe_name.downcase}, class = #{recipe_name.class}"
-			if r.name.downcase == recipe_name.downcase
-				puts "FOUND IT!"
-				@recipe_book.delete(r)
+			name = r.name
+			name = name.gsub(/\n/,"")
+			if name.downcase == recipe_name.downcase
+				if DEBUG
+					puts "#{r.name}"
+					puts
+					ingredients_list = r.whatIngredients
+					ingredients_list.each do |i|
+						puts "\t#{i}"
+					end
+					puts
+					puts r.whatDirections.split( /(.{,100}\S)\s+/ ).reject( &:empty? )
+					puts
+					puts
+				end
+			end
+		end
+	end
+
+	def displayRecipe(recipe)
+		@recipe_book.each do |r|
+			if r == recipe
+				if DEBUG
+					puts "#{r.name}"
+					puts
+					ingredients_list = r.whatIngredients
+					ingredients_list.each do |i|
+						puts "\t#{i}"
+					end
+					puts
+					puts r.whatDirections.split( /(.{,100}\S)\s+/ ).reject( &:empty? )
+					puts
+					puts
+				end
 			end
 		end
 	end
 
 	def displayRecipeBook
-		if DEBUG
-			puts
-			puts ("\t======================")
-			puts ("\t    #{@kitchen_name} Recipes")
-			puts ("\t======================")
-			puts
-			puts
-		end
+		puts
+		puts "\t======================"
+		puts "\t    #{@kitchen_name} Recipes"
+		puts "\t======================"
+		puts
+		puts
 		@recipe_book.each do |r|
-			if DEBUG
-				puts ("#{r.name}")
-				puts
-			end
-			ingredients_list = r.whatIngredients
-			ingredients_list.each do |i|
-				if DEBUG
-					puts ("\t#{i}")
-				end
-			end
-			if DEBUG
-				puts
-				puts r.whatDirections.split( /(.{,100}\S)\s+/ ).reject( &:empty? )
-				puts
-				puts
-			end
+			displayRecipe(r)
 		end
 		return TRUE
 	end
@@ -207,29 +217,30 @@ class Kitchen
 	def displayRecipeNames
 		if DEBUG
 			puts
-			puts ("\t======================")
-			puts ("\t    #{@kitchen_name} Recipes")
-			puts ("\t======================")
-			puts
+			puts "======================"
 			puts
 		end
 		@recipe_book.each do |r|
 			if DEBUG
-				puts ("#{r.name}")
+				puts "#{r.name}"
 			end
+		end
+		if DEBUG
+			puts
+			puts "======================"
 		end
 		return TRUE
 	end
 
 	def storeRecipeBookToFile
-		file = File.open(@recipe_book_path, "w")
+		file = File.new(@recipe_book_path, "w")
 		if file == nil
 			return FALSE
 		else
 			@recipe_book.each do |r|
-				file.puts ("#{r.name}")
-				file.puts ("#{r.whatIngredients}")
-				file.puts ("#{r.whatDirections}")
+				file.puts "_RECIPE_#{r.name}"
+				file.puts "#{r.whatIngredients}"
+				file.puts "#{r.whatDirections}"
 			end
 			file.close unless file == nil
 			return TRUE
@@ -238,6 +249,7 @@ class Kitchen
 
 	def loadRecipeBookFromFile
 		if @recipe_book_path.length == 0
+			puts "FAILED TO LOAD RECIPE BOOK FROM: #{@recipe_book_path}"
 			return FALSE
 		else
 			File.open("#{@recipe_book_path}", "r") do |f|
@@ -246,28 +258,38 @@ class Kitchen
 				ingredients = []
 				directions = ""
 				f.each_line do |line|
-					count = count + 1
-					if count == 1
-						name = line
-					elsif count == 2
+					if line.include? "_RECIPE_"
+						###   Clean up from those multi-line directions 
+						###   from the last recipe loaded.
+						if directions.length > 0
+							a_recipe = Recipe.new(name, ingredients, directions)
+							@recipe_book.push a_recipe
+							ingredients = []
+							directions = ""
+						end
+						name = line.gsub("_RECIPE_", "")
+					elsif directions.empty? && ingredients == []
 						line.gsub!(/(\,)(\S)/, "\\1 \\2")
 						ingredients = YAML::load(line)
 					else
-						directions = line
-						a_recipe = Recipe.new(name, ingredients, directions)
-						@recipe_book.push a_recipe
-						count = 0
+						directions = directions + line
 					end
+				end
+				if directions.length > 0
+					a_recipe = Recipe.new(name, ingredients, directions)
+					@recipe_book.push a_recipe
+					directions = ""
 				end
 				return TRUE
 			end
 		end		
 	end
+
+	def changeToDifferentRecipeBookFile(new_recipe_book_path)
+		@recipe_book_path = new_recipe_book_path
+	end
 end
 
-###
-# BEGIN UI
-###
 
 
 
