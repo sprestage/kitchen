@@ -39,7 +39,7 @@ while quit == FALSE
 	puts error
 	choice = error = ""
 	pantryItemName = frozen = staple = whichCategory = ""
-	recipeName = directions = ""
+	recipeName = newRecipeName = directions = ""
 	ingredients = recipe = []
 	i = count = d = 0
 	puts message
@@ -112,7 +112,15 @@ while quit == FALSE
 		end
 
 	when "CP"
-		puts "TODO - You have chosen CP"
+		puts "Which pantry item would you like to change?  Enter the name of the item."
+		pantryItemName = gets.chomp
+		puts 		
+		if pantryItemName == ""
+			puts "No pantry item chosen.  None changed."
+		else
+			puts "CHANGING PANTRY ITEM #{pantryItemName}"
+			user_kitchen.changePantryItem(pantryItemName)
+		end
 
 	when "PP"
 		user_kitchen.displayPantry
@@ -185,7 +193,26 @@ while quit == FALSE
 		puts
 
 	when "CR"
-		puts "TODO - You have chosen CR"
+		puts "Which recipe would you like to change?  Enter the name of the recipe."
+		recipeName = gets.chomp
+		puts
+		if recipeName == ""
+			puts "No recipe chosen.  None changed."
+		else
+			puts "RECIPE BEFORE CHANGE"
+			user_kitchen.displayRecipeByName(recipeName)
+
+			puts "CHANGING RECIPE #{recipeName}"
+			puts
+			newRecipeName = user_kitchen.changeRecipe(recipeName)
+
+			puts "RECIPE AFTER CHANGE"
+			if newRecipeName == ""
+				user_kitchen.displayRecipeByName(recipeName)
+			else
+				user_kitchen.displayRecipeByName(newRecipeName)
+			end
+		end
 		puts
 
 	when "PR"
@@ -208,6 +235,7 @@ while quit == FALSE
 		else
 			puts "PRINTING RECIPE #{recipeName}"
 			user_kitchen.displayRecipeByName(recipeName)
+			puts LINE_MARKER
 		end
 
 	when "DR"
@@ -269,9 +297,6 @@ while quit == FALSE
 
 	when "PC"
 		puts KITCHEN
-
-	when "NO"
-		puts "THIS IS AN INTENTIONAL NO-OP FOR THE PURPOSES OF DEV/TESTING"
 
 	when "QQ"
 		user_kitchen.storePantryToFile

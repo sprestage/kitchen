@@ -49,21 +49,21 @@ describe PantryItem do
 		end
 	end
 
-	describe "#whichCategory" do
+	describe "#category" do
 		it "default should be an empty string" do
-			@default_pantry_item.whichCategory.should eq(CATEGORY_DEFAULT)
+			@default_pantry_item.category.should eq(CATEGORY_DEFAULT)
 		end
 	end
 
-	describe "#whichCategory" do
+	describe "#category" do
 		it "category is a string" do
-			@default_pantry_item.whichCategory.is_a?(String).should eq(TRUE)
+			@default_pantry_item.category.is_a?(String).should eq(TRUE)
 		end
 	end
 
-	describe "#whichCategory" do
+	describe "#category" do
 		it "non-default string can be set" do
-			@non_default_pantry_item.whichCategory.should eq(CATEGORY_NON_DEFAULT)
+			@non_default_pantry_item.category.should eq(CATEGORY_NON_DEFAULT)
 		end
 	end
 

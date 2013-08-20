@@ -3,29 +3,9 @@
 require './config'
 require 'table_print'
 
-#TODO - FEATURES
-#	1. Set up user interface:
-#		A. change recipe
-#		B. list recipes in kitchen
-#			i. DONE - list all recipes, long version
-#			ii. DONE - list all recipes, only by name
-#			iii. list just recipes fitting parameters?  This should probably move to NICE TO HAVE.
-#		C. change pantry item
-#
-# TODO - NICE TO HAVE FEATURES (for later implementation consideration)
-#	1. Add inStock to PantryItems
-#	2. Add a glutenFree and dairyFree to Recipes and PantryItems, or perhaps 
-#		just a aaronSafe bit for both.
-#	3. List pantry items by category, frozen, staple
-#	4. List pantry items needed for recipe
-#		A. list frozen/not frozen items needed for recipe
-#		B. list staple/not staple items needed for recipe
-#		C. list items by all categories
-#		D. list only items in given categories	
-#	5.	List recipes that fit certain parameters (like GF, dairy free, etc)			
-
 
 # Kitchen is a place that will have Recipes and PantryItems.  
+
 class Kitchen
 	attr_accessor :pantry_path, :recipe_book_path
 	def initialize(kitchen_name=KITCHEN_NAME_DEFAULT, pantry_path=PANTRY_PATH_DEFAULT, 
@@ -55,6 +35,67 @@ class Kitchen
 		end
 	end
 
+	def changePantryItem(old_pantry_item_name)
+		newPantryItemName = newFrozen = newStaple = newCategory = ""
+
+		@pantry.each do |p|
+			if p.name.downcase == old_pantry_item_name.downcase
+				puts "PANTRY ITEM BEFORE CHANGE"
+				puts "#{p.name}   #{p.isFrozen}   #{p.isStaple}   #{p.category}"
+
+				puts "Enter new name for: #{p.name}"
+				newPantryItemName = gets.chomp
+				puts
+				if newPantryItemName == ""
+					puts "No name entered.  Presuming no name change."
+				else
+					p.name = newPantryItemName
+				end
+
+				puts "Is this item stored in the freezer, true or false? "
+				newFrozen = gets.chomp
+				puts
+				newFrozen = newFrozen.upcase
+				if newFrozen == ""
+					puts "Nothing entered.  Assuming item is not stored in the freezer."
+					newFrozen = "FALSE"
+				elsif newFrozen == "TRUE" || newFrozen == "FALSE"
+					p.isFrozen = newFrozen
+				else
+					puts "Invalid freezer status.  Setting to default, not stored in freezer."
+					p.isFrozen = "FALSE"
+				end
+				puts ""
+
+				puts "Is this item a staple (usually on hand)? "
+				newStaple = gets.chomp
+				puts
+				newStaple = newStaple.upcase
+				if newStaple == ""
+					puts "Nothing entered.  Assuming item is a staple."
+					newStaple = "TRUE"
+				elsif newStaple == "TRUE" || newStaple == "FALSE"
+					p.isStaple = newStaple
+				else
+					puts "Invalid staple status.  Setting to default, this item is a staple."
+					p.isStaple = "TRUE"
+				end
+
+				puts "Enter the category of the pantry item."
+				newCategory = gets.chomp
+				puts
+				if newCategory == ""
+					puts "No category was entered.  Setting to default, no category."
+					p.category = ""
+				else
+					p.category = newCategory
+				end
+				puts "PANTRY ITEM AFTER CHANGE"
+				puts "#{p.name}   #{p.isFrozen}   #{p.isStaple}   #{p.category}"
+			end
+		end
+	end
+
 	def deleteFromPantry(pantry_item)
 		@pantry.each do |p|
 			if p == pantry_item
@@ -77,7 +118,7 @@ class Kitchen
 			puts "\t======================================================"
 			puts
 			puts
-			tp @pantry, :name, {:frozen => {:display_method => :isFrozen}}, {:staple => {:display_method => :isStaple}}, {:category => {:display_method => :whichCategory}}
+			tp @pantry, :name, {:frozen => {:display_method => :isFrozen}}, {:staple => {:display_method => :isStaple}}, :category
 		end
 		return TRUE
 	end
@@ -88,7 +129,7 @@ class Kitchen
 			file.puts "#{p.name}"
 			file.puts "#{p.isFrozen}"
 			file.puts "#{p.isStaple}"
-			file.puts "#{p.whichCategory}"
+			file.puts "#{p.category}"
 		end
 		file.close unless file == nil
 		return TRUE
@@ -105,7 +146,7 @@ class Kitchen
 				staple = ""
 				category = ""
 				f.each_line do |line|
-					line = line.gsub(/\n/," ")
+					line = line.gsub(/\n/,"")
 					count = count + 1
 					if count == 1
 						name = line
@@ -147,6 +188,62 @@ class Kitchen
 		end
 	end
 
+	def changeRecipe(old_recipe_name)
+		currentRecipeName = newRecipeName = newDirections = ""
+		newIngredients = []
+		i = count = 0
+
+		@recipe_book.each do |r|
+			currentRecipeName = r.name
+			currentRecipeName = currentRecipeName.gsub(/\n/,"")
+			if currentRecipeName.downcase == old_recipe_name.downcase
+				puts "Enter new name for: #{r.name}"
+				newRecipeName = gets.chomp
+				if newRecipeName == ""
+					puts "No name entered.  Presuming no name change."
+					puts
+				else
+					r.name = newRecipeName
+				end
+
+				puts "List your ingredients.  An empty line will signal that you have "
+				puts "listed all the ingredients in the recipe."
+				while i != "" do
+					count = count + 1
+					puts "ingredient ##{count}, (include amount):"
+					i = gets.chomp
+					puts
+					if i.empty?
+						if count != 1
+							puts "No more ingredients."
+						end
+					else
+						newIngredients.push i
+					end
+				end
+				if newIngredients == []
+					puts "No ingredients entered.  Presuming no change to ingredients."
+					puts
+				else
+					r.ingredients = newIngredients
+				end
+
+				puts "Enter your directions.  Whitespace and extra carriage returns are fine.  "
+				puts "Just press Ctrl + D when you are done."
+				newDirections = STDIN.read
+				if newDirections == ""
+					puts "No directions entered.  Presuming no change to directions."
+					puts
+				else
+					r.directions = newDirections
+				end
+
+				return newRecipeName
+			end
+		end
+	end
+
+
 	def deleteFromRecipeBook(recipe)
 		@recipe_book.each do |r|
 			if r == recipe
@@ -167,6 +264,8 @@ class Kitchen
 			name = name.gsub(/\n/,"")
 			if name.downcase == recipe_name.downcase
 				if DEBUG
+					puts
+					puts LINE_MARKER
 					puts "#{r.name}"
 					puts
 					ingredients_list = r.whatIngredients
@@ -175,8 +274,6 @@ class Kitchen
 					end
 					puts
 					puts r.whatDirections.split( /(.{,100}\S)\s+/ ).reject( &:empty? )
-					puts
-					puts
 				end
 			end
 		end
@@ -186,6 +283,8 @@ class Kitchen
 		@recipe_book.each do |r|
 			if r == recipe
 				if DEBUG
+					puts
+					puts LINE_MARKER
 					puts "#{r.name}"
 					puts
 					ingredients_list = r.whatIngredients
@@ -194,20 +293,20 @@ class Kitchen
 					end
 					puts
 					puts r.whatDirections.split( /(.{,100}\S)\s+/ ).reject( &:empty? )
-					puts
-					puts
 				end
 			end
 		end
 	end
 
 	def displayRecipeBook
-		puts
-		puts "\t======================"
-		puts "\t    #{@kitchen_name} Recipes"
-		puts "\t======================"
-		puts
-		puts
+		if DEBUG
+			puts
+			puts "\t======================"
+			puts "\t    #{@kitchen_name} Recipes"
+			puts "\t======================"
+			puts
+			puts
+		end
 		@recipe_book.each do |r|
 			displayRecipe(r)
 		end
@@ -249,7 +348,9 @@ class Kitchen
 
 	def loadRecipeBookFromFile
 		if @recipe_book_path.length == 0
-			puts "FAILED TO LOAD RECIPE BOOK FROM: #{@recipe_book_path}"
+			if DEBUG
+				puts "FAILED TO LOAD RECIPE BOOK FROM: #{@recipe_book_path}"
+			end
 			return FALSE
 		else
 			File.open("#{@recipe_book_path}", "r") do |f|

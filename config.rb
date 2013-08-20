@@ -1,4 +1,5 @@
-DEBUG = TRUE
+#DEBUG = FALSE 	#To quiet the output when running unit tests in rspec.  For development.
+DEBUG = TRUE 	#To run successfully for users.  For production.
 
 PANTRY_PATH_DEFAULT = "/Users/susan/Documents/myPantry.txt"
 RECIPE_BOOK_PATH_DEFAULT = "/Users/susan/Documents/myRecipes.txt"
@@ -28,6 +29,7 @@ DIRECTIONS_DEFAULT = "Simple directions."
 INGREDIENTS_NON_DEFAULT = ["ingred_one","ingred_two","ingred_three"]
 DIRECTIONS_NON_DEFAULT = "Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  Lengthy directions.  This is a set of very lengthy directions.  "
 
+LINE_MARKER = "****************************************************************************************************"
 
 KITCHEN = <<END
 
@@ -46,12 +48,12 @@ KITCHEN = <<END
 ||                              COMMANDS                                           ||
 ||                                                                                 ||
 ||          AP - Add item to Pantry                                                ||
-||          TODO: CP - Change item in the Pantry                                         ||
+||          CP - Change item in the Pantry                                         ||
 ||          PP - Print the Pantry                                                  ||
 ||          DP - Delete item in Pantry                                             ||
 ||                                                                                 ||
 ||          AR - Add Recipe                                                        ||
-||          TODO: CR - Change Recipe                                                     ||
+||          CR - Change Recipe                                                     ||
 ||          PR - Print Recipes                                                     ||
 ||          DR - Delete Recipe                                                     ||
 ||                                                                                 ||
