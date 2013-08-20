@@ -12,16 +12,4 @@ class PantryItem
 		@category = category   # dairy, meat, produce, (which section of grocery store)
 	end
 
-	# def isFrozen
-	# 	return @freezer
-	# end
-
-	# def isStaple
-	# 	return @staple
-	# end
-
-	# def whichCategory
-	# 	return @category
-	# end
-
 end
