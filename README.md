@@ -21,7 +21,6 @@ This program is designed to be run from a command line.  Typically, like this:
 <pre>
 	~> ruby kitchen
 </pre>
->>>>>>> ce6cf04001db140ada3ccdee967d61c1dc0472e3
 
 
 What kitchen does
@@ -54,27 +53,9 @@ spec/*_spec.rb - Unit tests for all of the above.
 
 
 
-<<<<<<< HEAD
-TODO - NICE TO HAVE FEATURES (for later implementation consideration)
-	1. Add inStock to PantryItems
-	2. Add a glutenFree and dairyFree to Recipes and PantryItems, or perhaps
-		just a aaronSafe bit for both.
-	3. List pantry items by category, frozen, staple
-	4. List pantry items needed for recipe
-		A. list frozen/not frozen items needed for recipe
-		B. list staple/not staple items needed for recipe
-		C. list items by all categories
-		D. list only items in given categories
-	5. List recipes that fit certain parameters (like GF, dairy free, etc)
-	6. Need to validate input from user.  Particularly for filenames/paths.  Currently,
-		this program assumes a benign user.
-	7. Switch from flat file data storage to database data storage.
-	8. Convert executable application to a web application, then deploy on Heroku.
-
 =======
 TODO
 =======
->>>>>>> ce6cf04001db140ada3ccdee967d61c1dc0472e3
 
 NICE TO HAVE FEATURES (for later implementation consideration)
 <ol>
